@@ -1,13 +1,19 @@
 HTML-Table-to-JSON
 ==================
 
+Author: Colin Tremblay
+
+Date:   Tuesday, 12th November, 2013
+
+### About
 Easily scrape and parse a table stored on a web page.
 
 This project is still in ALPHA, meaning it is not fully functional!
 
-Author: Colin Tremblay
-
-Date:   Tuesday, 12th November, 2013
+### Usage
+To get the parser, simply download the 4 php files in 'src.' To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON object, and call tableToJSON($url, $headerOption)
+The header option indicates whether the first column should be used as a header for the entire row. Choosing TRUE results in cells arranged in an array, where each cell has properties of name, column title, row title, and span number. Choosing FALSE treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with column_title : cell_title pairs as attributes.
+test.php has an example of this usage.
 
 For support, feedback, suggestions etc. please email tremblay@grinnell.edu
 
