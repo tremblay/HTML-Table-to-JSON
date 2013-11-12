@@ -1,4 +1,14 @@
 <?php
+/*****************************************************************
+* TableCell.php
+* Updated: Tuesday, Nov. 12, 2013
+* 
+* Colin Tremblay
+* Grinnell College '14
+*
+* Stores attributes of a cell and provides a JSON printing method
+*  Used when the first column headers, not data
+******************************************************************/
 
 class TableCell {
 	private $cell_text;

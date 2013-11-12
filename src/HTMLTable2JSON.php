@@ -1,18 +1,20 @@
 <?php
-/**********************************************************
+/*****************************************************************
+* HTMLTable2JSON.php
+* Updated: Tuesday, Nov. 12, 2013
+* 
 * Colin Tremblay
 * Grinnell College '14
 *
-* This file creates a json file from an HTML table
-***********************************************************/
-
+* Creates a JSON file from the first HTML table at the given URL
+******************************************************************/
 
 ini_set('display_errors', 'On');
 ini_set('memory_limit', '-1');
 include_once "TableColumn.php";
 include_once "TableRow.php";
 
-class HTML_Table_to_JSON {
+class HTMLTable2JSON {
 
 	public function tableToJSON($url, $useFirstColumnAsRowName) {
 		// Get html using curl

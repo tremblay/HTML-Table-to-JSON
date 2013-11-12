@@ -1,4 +1,14 @@
 <?php
+/*****************************************************************
+* TableRow.php
+* Updated: Tuesday, Nov. 12, 2013
+* 
+* Colin Tremblay
+* Grinnell College '14
+*
+* Stores attributes of a row and provides a JSON printing method
+*  Used when the first column contains data, not headers
+******************************************************************/
 
 include_once "TableRow.php";
 

@@ -1,4 +1,14 @@
 <?php
+/*****************************************************************
+* TableColumn.php
+* Updated: Tuesday, Nov. 12, 2013
+* 
+* Colin Tremblay
+* Grinnell College '14
+*
+* Stores attributes of a column and provides JSON printing methods
+*  Used when the first column headers, not data
+******************************************************************/
 
 include_once "TableCell.php";
 
