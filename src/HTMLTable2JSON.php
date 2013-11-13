@@ -84,9 +84,19 @@ class HTMLTable2JSON {
 		
 		$table = substr($table, $start_pos, $length - $start_pos);
 
+		// Set up array for skipping columns that don't show up in HTML
+			// due to rowspan > 1 in the previous row
+		$skipped_columns = array();
+
 		// Loop through the rows
 		$start_pos = stripos($table, '<tr');
 		for ($j = 0; false !== $start_pos; $j++) {
+			// If this row doens't have a skipped array, add one
+			if (count($skipped_columns) <= $j + 1) {
+				$row_with_skipped_columns = array();
+				array_push($skipped_columns, $row_with_skipped_columns);
+			}
+
 			// Create temp string with JUST the row we're currently looking at
 			$end_pos = stripos($table, '</tr>', $start_pos); //HERE??
 			$end_pos += strlen('</tr>');
@@ -116,6 +126,10 @@ class HTMLTable2JSON {
 			// Loop through the columns
 			$inner_pos_start = stripos($temp, '<td');
 			for ($i; false !== $inner_pos_start; $i++) {
+				// Skip over columns in the array created by rowspans
+				while (in_array($i, $skipped_columns[$j])) {
+					$i++;
+				}
 				$inner_pos_start += strlen('<td');
 				$inner_pos_end = stripos($temp, '</td>', $inner_pos_start) + strlen('</td>');
 				$inner_len = $inner_pos_end - $inner_pos_start;
@@ -141,6 +155,15 @@ class HTMLTable2JSON {
 						$inner_len = $inner_pos_end - $inner_pos_start;
 						$span = substr($cell, $inner_pos_start, $inner_len);
 						$span_number = intval($span);
+						$span_no = $span_number;
+						// Set up skipped columns to skip over columns missed in HTML in future rows due to rowspan > 1
+						for ($k = $j + 1; $span_no > 1; $span_no--, $k++) {
+							if (count($skipped_columns) <= $k) {
+								$another_row_with_skipped_columns = array();
+								array_push($skipped_columns, $another_row_with_skipped_columns);
+							}
+							array_push($skipped_columns[$k], $i);
+						}
 					}
 					else $span_number = 1;
 					$column_array[$i]->addCell($cell_name, $row_header, $span_number);
