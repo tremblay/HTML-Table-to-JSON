@@ -16,7 +16,7 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $useFirstColumnAsRowName) {
+	public function tableToJSON($url, $useFirstColumnAsRowName, $tableID = '') {
 		// Get html using curl
 		$c = curl_init($url);
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
@@ -33,8 +33,9 @@ class HTMLTable2JSON {
 		curl_close($c);
 
 		// Pull table out of HTML
-		$start_pos = stripos($html, '<table id');
-		$end_pos = stripos($html, '</table>');
+		$table_str = '<table id="'.$tableID;
+		$start_pos = stripos($html, $table_str);
+		$end_pos = stripos($html, '</table>', $start_pos);
 		$length = $end_pos - $start_pos;
 		$table = substr($html, $start_pos, $length);
 		$permanent_table = $table;
