@@ -16,7 +16,18 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $useFirstColumnAsRowName, $tableID = '') {
+	public function tableToJSON($url, $useFirstColumnAsRowName, $tableID = '', $ignoreCols = array(0 => 'nil')) {
+		$ignoring = FALSE;
+		if (!is_array($ignoreCols))
+			echo('ignoreCols must be an array. Did not ignore any columns.<br />');
+		else  
+			for ($i = 0; $i < count($ignoreCols); $i++) {
+				if(is_int($ignoreCols[0])) {
+					$ignoring = TRUE;
+					break;
+				}
+			}
+
 		// Get html using curl
 		$c = curl_init($url);
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
@@ -29,7 +40,7 @@ class HTMLTable2JSON {
 		if (200 <= $status && 300 > $status)
 			echo 'Got the html.<br />';
 		else
-			echo 'Failed to get html.<br />';
+			die('Failed to get html.<br />');
 		curl_close($c);
 
 		// Pull table out of HTML
@@ -128,53 +139,55 @@ class HTMLTable2JSON {
 			$inner_pos_start = stripos($temp, '<td');
 			for ($i; false !== $inner_pos_start; $i++) {
 				// Skip over columns in the array created by rowspans
-				while (in_array($i, $skipped_columns[$j])) {
+				while (in_array($i, $skipped_columns[$j]))
 					$i++;
-				}
-				$inner_pos_start += strlen('<td');
-				$inner_pos_end = stripos($temp, '</td>', $inner_pos_start) + strlen('</td>');
-				$inner_len = $inner_pos_end - $inner_pos_start;
-				$cell = substr($temp, $inner_pos_start, $inner_len);
 
-				$inner_pos_end = stripos($cell, '</td>');
-				$inner_pos_start = stripos($cell, '>') + strlen('>');
-				if ($inner_pos_end != $inner_pos_start) {
+				// Skip over user specified columns
+				if (!in_array($i, $ignoreCols)) {
+					$inner_pos_start += strlen('<td');
+					$inner_pos_end = stripos($temp, '</td>', $inner_pos_start) + strlen('</td>');
 					$inner_len = $inner_pos_end - $inner_pos_start;
-					$cell_name = substr($cell, $inner_pos_start, $inner_len);
-					$cell_name = str_replace('"', '\"', $cell_name);
-					$cell_name = str_replace('<br />', '', $cell_name);
-					$cell_name = trim($cell_name);
+					$cell = substr($temp, $inner_pos_start, $inner_len);
 
-					$other_pos = stripos($cell, ' rowspan-');
-					if (false === $other_pos)
-						$spans_one = true;
-					else $spans_one = false;
-
-					if(!$spans_one) {
-						$inner_pos_start = stripos($cell, ' rowspan-') + strlen(' rowspan-');
-						$inner_pos_end = stripos($cell, '">');
+					$inner_pos_end = stripos($cell, '</td>');
+					$inner_pos_start = stripos($cell, '>') + strlen('>');
+					if ($inner_pos_end != $inner_pos_start) {
 						$inner_len = $inner_pos_end - $inner_pos_start;
-						$span = substr($cell, $inner_pos_start, $inner_len);
-						$span_number = intval($span);
-						$span_no = $span_number;
-						// Set up skipped columns to skip over columns missed in HTML in future rows due to rowspan > 1
-						for ($k = $j + 1; $span_no > 1; $span_no--, $k++) {
-							if (count($skipped_columns) <= $k) {
-								$another_row_with_skipped_columns = array();
-								array_push($skipped_columns, $another_row_with_skipped_columns);
+						$cell_name = substr($cell, $inner_pos_start, $inner_len);
+						$cell_name = str_replace('"', '\"', $cell_name);
+						$cell_name = str_replace('<br />', '', $cell_name);
+						$cell_name = trim($cell_name);
+
+						$other_pos = stripos($cell, ' rowspan-');
+						if (false === $other_pos)
+							$spans_one = true;
+						else $spans_one = false;
+
+						if(!$spans_one) {
+							$inner_pos_start = stripos($cell, ' rowspan-') + strlen(' rowspan-');
+							$inner_pos_end = stripos($cell, '">');
+							$inner_len = $inner_pos_end - $inner_pos_start;
+							$span = substr($cell, $inner_pos_start, $inner_len);
+							$span_number = intval($span);
+							$span_no = $span_number;
+							// Set up skipped columns to skip over columns missed in HTML in future rows due to rowspan > 1
+							for ($k = $j + 1; $span_no > 1; $span_no--, $k++) {
+								if (count($skipped_columns) <= $k) {
+									$another_row_with_skipped_columns = array();
+									array_push($skipped_columns, $another_row_with_skipped_columns);
+								}
+								array_push($skipped_columns[$k], $i);
 							}
-							array_push($skipped_columns[$k], $i);
+						}
+						else $span_number = 1;
+						$column_array[$i]->addCell($cell_name, $row_header, $span_number);
+					
+						if(!$useFirstColumnAsRowName){
+							$column_header = $column_array[$i]->getName();
+							$table_row_object->addAttributePair($column_header, $cell_name);
 						}
 					}
-					else $span_number = 1;
-					$column_array[$i]->addCell($cell_name, $row_header, $span_number);
-				
-					if(!$useFirstColumnAsRowName){
-						$column_header = $column_array[$i]->getName();
-						$table_row_object->addAttributePair($column_header, $cell_name);
-					}
 				}
-
 				// Cut out 
 				$inner_pos_end = stripos($temp, '</td>') + strlen('</td>');
 				$inner_pos_start = stripos($temp, '</tr>') + strlen('</tr>');
@@ -196,7 +209,7 @@ class HTMLTable2JSON {
 
 		$outfile = 'output.json';
 		if (false == ($out_handle = fopen($outfile, 'w')))
-			echo 'Failed to create output file.';
+			die('Failed to create output file.');
 
 		if($useFirstColumnAsRowName) {
 			$output = "{";
