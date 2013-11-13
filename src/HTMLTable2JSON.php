@@ -39,26 +39,19 @@ class HTMLTable2JSON {
 		$table = substr($html, $start_pos, $length);
 		$permanent_table = $table;
 
-		// Get number of columns and create that many TableColumn objects
-		$start_pos = strrpos($table, '<td class="column-');
-		$end_pos = strpos($table, '">', $start_pos);
-		$start_pos += strlen('<td class="column-');
-		$temp_length = $end_pos - $start_pos;
-		$number_of_columns = intval(substr($table, $start_pos, $temp_length));
-
+		// Set up arrays
 		$column_array = array();
 		$row_array = array();
-		$header_start = stripos($table, '<thead>');
+		$header_start = stripos($table, '<thead>') + strlen('<thead>');
 		if (false !== $header_start) {
 			$header_end = stripos($table, '</thead>');
 			$header_end += strlen('</thead>');
 			$header_length = $header_end - $header_start;
 			$header = substr($table, $header_start, $header_length);
-			$column_tag = '<th class="column-';
 
-			$header_start = stripos($header, $column_tag);
-			while (false !== $header_start) {
-				$header_start = stripos($header, '">', $header_start) + strlen('">');
+			$header_start = stripos($header, '<th');
+			for ($i = 0; false !== $header_start; $i++) {
+				$header_start = stripos($header, '>', $header_start) + strlen('>');
 				$header_end = stripos($header, '</th>', $header_start);
 				if ($header_end != $header_start) {
 					$header_length = $header_end - $header_start;
@@ -68,13 +61,9 @@ class HTMLTable2JSON {
 					$cell_name = trim($cell_name);
 					array_push($column_array, new TableColumn($cell_name));
 				}
-				else {
-					$header_start = stripos($header, $column_tag) + strlen($column_tag);
-					$header_end = stripos($header, '">', $header_start);
-					$header_length = $header_end - $header_start;
-					$column_number  = substr($header, $header_start, $header_length);
-					array_push($column_array, new TableColumn('Column'.$column_number));
-				}
+				else 
+					array_push($column_array, new TableColumn('Column'.$i));
+	
 				// Cut out 
 				$header_end = stripos($header, '</tr>');
 				$header_end += strlen('</tr>');
@@ -84,30 +73,30 @@ class HTMLTable2JSON {
 				$header = substr($header, $header_start, $header_length);
 
 				// set up next pass through loop
-				$header_start = stripos($header, $column_tag);
+				$header_start = stripos($header, '<th');
 			}
 		
 			// Trim out the header row 
-			$start_pos = stripos($table, '<tr class="row-2');
+			$start_pos = stripos($table, '</th>') + strlen('</th>');
 		}
 		else 
-			$start_pos = stripos($table, '<tr class="row-1');
+			$start_pos = stripos($table, '<tr');
 		
 		$table = substr($table, $start_pos, $length - $start_pos);
 
 		// Loop through the rows
-		$start_pos = stripos($table, '<tr class="row-');
-		while (false !== $start_pos) {
+		$start_pos = stripos($table, '<tr');
+		for ($j = 0; false !== $start_pos; $j++) {
 			// Create temp string with JUST the row we're currently looking at
-			$end_pos = stripos($table, '</tr>', 1);
+			$end_pos = stripos($table, '</tr>', $start_pos); //HERE??
 			$end_pos += strlen('</tr>');
 			$length = $end_pos - $start_pos;
 			$temp = substr($table, $start_pos, $length);
 			$table_row_object = new TableRow();
 			if ($useFirstColumnAsRowName){
 				// Get Header from column 1 and trim out column 1
-				$inner_pos_start = stripos($temp, 'class="column-1');
-				$inner_pos_start = stripos($temp, '">', $inner_pos_start) + strlen('">');
+				$inner_pos_start = stripos($temp, '<td');
+				$inner_pos_start = stripos($temp, '>', $inner_pos_start) + strlen('>');
 				$inner_pos_end = stripos($temp, '</td>');
 				$inner_len = $inner_pos_end - $inner_pos_start;
 				$row_header = substr($temp, $inner_pos_start, $inner_len);
@@ -118,26 +107,22 @@ class HTMLTable2JSON {
 				$inner_pos_end = stripos($temp, '</tr>') + strlen('</tr>');
 				$inner_len = $inner_pos_end - $inner_pos_start;
 				$temp = substr($temp, $inner_pos_start, $inner_len);
+				$i = 1;
 			}
 			else {
-				$inner_pos_start = strlen('<tr class="row-');
-				$inner_pos_end = stripos($temp, ' odd');
-				if (false === $inner_pos_end)
-					$inner_pos_end = stripos($temp, ' even');
-				$inner_len = $inner_pos_end - $inner_pos_start;
-				$row_header = 'Row '.substr($temp, $inner_pos_start, $inner_len);		
+				$row_header = 'Row '.$j;
+				$i = 0;
 			}
-
 			// Loop through the columns
-			$column_tag = 'class="column-';
-			$inner_pos_start = stripos($temp, '<td ');
-			while (false !== $inner_pos_start) {
+			$inner_pos_start = stripos($temp, '<td');
+			for ($i; false !== $inner_pos_start; $i++) {
+				$inner_pos_start += strlen('<td');
 				$inner_pos_end = stripos($temp, '</td>', $inner_pos_start) + strlen('</td>');
 				$inner_len = $inner_pos_end - $inner_pos_start;
 				$cell = substr($temp, $inner_pos_start, $inner_len);
 
 				$inner_pos_end = stripos($cell, '</td>');
-				$inner_pos_start = stripos($cell, '">') + strlen('">');
+				$inner_pos_start = stripos($cell, '>') + strlen('>');
 				if ($inner_pos_end != $inner_pos_start) {
 					$inner_len = $inner_pos_end - $inner_pos_start;
 					$cell_name = substr($cell, $inner_pos_start, $inner_len);
@@ -150,16 +135,6 @@ class HTMLTable2JSON {
 						$spans_one = true;
 					else $spans_one = false;
 
-					$inner_pos_start = stripos($cell, $column_tag) + strlen($column_tag);
-					if($spans_one)
-						$inner_pos_end = stripos($cell, '">', $inner_pos_start);
-					else $inner_pos_end = $other_pos;
-					$inner_len = $inner_pos_end - $inner_pos_start;
-					$column_number = substr($cell, $inner_pos_start, $inner_len);
-					// Subtract 1 to zero index
-					$array_index = intval($column_number) - 1;
-
-
 					if(!$spans_one) {
 						$inner_pos_start = stripos($cell, ' rowspan-') + strlen(' rowspan-');
 						$inner_pos_end = stripos($cell, '">');
@@ -168,10 +143,10 @@ class HTMLTable2JSON {
 						$span_number = intval($span);
 					}
 					else $span_number = 1;
-					$column_array[$array_index]->addCell($cell_name, $row_header, $span_number);
+					$column_array[$i]->addCell($cell_name, $row_header, $span_number);
 				
 					if(!$useFirstColumnAsRowName){
-						$column_header = $column_array[$array_index]->getName();
+						$column_header = $column_array[$i]->getName();
 						$table_row_object->addAttributePair($column_header, $cell_name);
 					}
 				}
@@ -183,7 +158,7 @@ class HTMLTable2JSON {
 				$temp = substr($temp, $inner_pos_end, $inner_len);
 
 				// set up next pass through loop
-				$inner_pos_start = stripos($temp, '<td ');
+				$inner_pos_start = stripos($temp, '<td');
 			}
 			if (!$useFirstColumnAsRowName) {
 				array_push($row_array, $table_row_object);
@@ -192,7 +167,7 @@ class HTMLTable2JSON {
 			$start_pos += strlen('</tbody');
 			$length = $start_pos - $end_pos;
 			$table = substr($table, $end_pos, $length);
-			$start_pos = stripos($table, '<tr class="row-');
+			$start_pos = stripos($table, '<tr');
 		}
 
 		$outfile = 'output.json';
