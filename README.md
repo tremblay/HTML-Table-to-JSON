@@ -5,7 +5,7 @@ Author: Colin Tremblay
 
 Date:   Tuesday, 12th November, 2013
 
-### About
+## About
 Easily scrape and parse a table stored on a web page.
 
 This project is still in ALPHA, meaning it is not fully functional!
@@ -14,14 +14,30 @@ The current version is .6
 
 The project currently works on most HTML tables. Testing will be added soon. After that, features similar to those in the javascript version (https://github.com/lightswitch05/table-to-json) by @lightswitch05 will be added. 
 
-### Usage
-To get the parser, simply download the 4 php files in 'src.' To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON object, and call tableToJSON($url, $headerOption)
-The header option indicates whether the first column should be used as a header for the entire row. Choosing TRUE results in cells arranged in an array, where each cell has properties of name, column title, row title, and span number. Choosing FALSE treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with column_title : cell_title pairs as attributes.
-test.php has an example of this usage.
+## Usage
+To get the parser, simply download the 4 php files in 'src.' 
+
+To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON object, and call `tableToJSON($url);`
+
+### Optional Arguments
+- `firstColumnIsRowName`
+  - Boolean indicating whether the first column in the table should be parsed as the title for all values in the row.
+  - Choosing `TRUE` results in cells arranged in an array, where each cell has properties of name, column title, row title, and span number. 
+  - Choosing `FALSE` treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with `column_title : cell_title` pairs as attributes.
+  - Default: `TRUE`
+- `tableID`
+  - String to contain the ID of the table. Allows user to specify a particular table. Default behavior simply grabs the first table encountered on the page.
+  - Default: `''`
+- `ignoreColumns`
+  - Array of column indexes to ignore.
+  - Default: `array(0 => 'nil')`
+
+test.php has examples of the correct usage.
+
 
 For support, feedback, suggestions etc. please email tremblay@grinnell.edu
 
-### License
+## License
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
