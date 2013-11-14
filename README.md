@@ -12,7 +12,7 @@ This project is still in ALPHA, meaning it is not fully functional!
 
 The current version is .6
 
-The project currently works on most HTML tables. Testing will be added soon. After that, features similar to those in the javascript version (https://github.com/lightswitch05/table-to-json) by @lightswitch05 will be added. 
+The project currently works on most HTML tables. Features similar to those in the javascript version (https://github.com/lightswitch05/table-to-json) by @lightswitch05 will be added soon. 
 
 ## Usage
 To get the parser, simply download the 4 php files in 'src.' 
@@ -20,7 +20,7 @@ To get the parser, simply download the 4 php files in 'src.'
 To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON object, and call `tableToJSON($url);`
 
 ### Optional Arguments
-- `firstColumnIsRowName`
+- `firstColIsRowName`
   - Boolean indicating whether the first column in the table should be parsed as the title for all values in the row.
   - Choosing `TRUE` results in cells arranged in an array, where each cell has properties of name, column title, row title, and span number. 
   - Choosing `FALSE` treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with `column_title : cell_title` pairs as attributes.
@@ -31,8 +31,15 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
 - `ignoreColumns`
   - Array of column indexes to ignore.
   - Default: `array(0 => 'nil')`
+- `testing`
+  - String representing an HTML table. Allows user to manually input a table for conversion, instead of scraping from a webpage.
+  - Ignores whatever value is in `url`
+  - Causes tableToJSON to return the JSON as a string (instead of creating a file with it).
+  - Default: `NULL`
 
-test.php has examples of the correct usage.
+Note about php and optional arguments: If you wish to use an argument lower on the list, but not one higher, you must still fill in the higher values. To avoid changing the program, use `NULL` as the argument for any options you do not wish to change. 
+
+sample.php has examples of the correct usage.
 
 
 For support, feedback, suggestions etc. please email tremblay@grinnell.edu
