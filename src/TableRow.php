@@ -29,8 +29,8 @@ class TableRow {
 	public function writeJSON(){
 		$ret = "\n\t{\n";
 		while(null != ($temp = array_pop($this->attribute_values)))
-			$ret = $ret."\t\t\"".array_pop($this->attribute_titles)."\":\"".$temp."\",\n";
-		$ret = trim($ret, ",\n");
+			$ret = $ret."\t\t\"".array_pop($this->attribute_titles)."\":\"".$temp."\", \n";
+		$ret = trim($ret, ", \n");
 		$ret = $ret."\n\t}";
 		return $ret;
 	}

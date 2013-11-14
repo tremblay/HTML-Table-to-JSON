@@ -16,7 +16,7 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $firstColumnIsRowName = TRUE, $tableID = '', $ignoreCols = array(0 => 'nil')) {
+	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = array(0 => 'nil'), $testing = NULL) {
 		$ignoring = FALSE;
 		if (!is_array($ignoreCols))
 			echo('ignoreCols must be an array. Did not ignore any columns.<br />');
@@ -27,21 +27,26 @@ class HTMLTable2JSON {
 					break;
 				}
 			}
+		if (!$ignoring)
+			$ignoreCols = NULL;
 
-		// Get html using curl
-		$c = curl_init($url);
-		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-		$html = curl_exec($c);
-		if (curl_error($c))
-			die(curl_error($c));
+		if (NULL == $testing) {
+			// Get html using curl
+			$c = curl_init($url);
+			curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+			$html = curl_exec($c);
+			if (curl_error($c))
+				die(curl_error($c));
 
-		// Check return status
-		$status = curl_getinfo($c, CURLINFO_HTTP_CODE);
-		if (200 <= $status && 300 > $status)
-			echo 'Got the html.<br />';
-		else
-			die('Failed to get html.<br />');
-		curl_close($c);
+			// Check return status
+			$status = curl_getinfo($c, CURLINFO_HTTP_CODE);
+			if (200 <= $status && 300 > $status)
+				echo 'Got the html from '.$url.'<br />';
+			else
+				die('Failed to get html from '.$url.'<br />');
+			curl_close($c);
+		}
+		else $html = $testing;
 
 		// Pull table out of HTML
 		$table_str = '<table id="'.$tableID;
@@ -115,7 +120,7 @@ class HTMLTable2JSON {
 			$length = $end_pos - $start_pos;
 			$temp = substr($table, $start_pos, $length);
 			$table_row_object = new TableRow();
-			if ($firstColumnIsRowName){
+			if ($firstColIsRowName){
 				// Get Header from column 1 and trim out column 1
 				$inner_pos_start = stripos($temp, '<td');
 				$inner_pos_start = stripos($temp, '>', $inner_pos_start) + strlen('>');
@@ -135,6 +140,7 @@ class HTMLTable2JSON {
 				$row_header = 'Row '.$j;
 				$i = 0;
 			}
+
 			// Loop through the columns
 			$inner_pos_start = stripos($temp, '<td');
 			for ($i; false !== $inner_pos_start; $i++) {
@@ -143,7 +149,7 @@ class HTMLTable2JSON {
 					$i++;
 
 				// Skip over user specified columns
-				if (!in_array($i, $ignoreCols)) {
+				if (NULL == $ignoreCols || !in_array($i, $ignoreCols)) {
 					$inner_pos_start += strlen('<td');
 					$inner_pos_end = stripos($temp, '</td>', $inner_pos_start) + strlen('</td>');
 					$inner_len = $inner_pos_end - $inner_pos_start;
@@ -182,7 +188,7 @@ class HTMLTable2JSON {
 						else $span_number = 1;
 						$column_array[$i]->addCell($cell_name, $row_header, $span_number);
 					
-						if(!$firstColumnIsRowName){
+						if(!$firstColIsRowName){
 							$column_header = $column_array[$i]->getName();
 							$table_row_object->addAttributePair($column_header, $cell_name);
 						}
@@ -197,7 +203,7 @@ class HTMLTable2JSON {
 				// set up next pass through loop
 				$inner_pos_start = stripos($temp, '<td');
 			}
-			if (!$firstColumnIsRowName) {
+			if (!$firstColIsRowName) {
 				array_push($row_array, $table_row_object);
 			}
 			$start_pos = stripos($table, '</tbody');
@@ -211,7 +217,7 @@ class HTMLTable2JSON {
 		if (false == ($out_handle = fopen($outfile, 'w')))
 			die('Failed to create output file.');
 
-		if($firstColumnIsRowName) {
+		if($firstColIsRowName) {
 			$output = "{";
 			foreach($column_array as &$col) {
 				if ($col->hasCells())
@@ -228,10 +234,16 @@ class HTMLTable2JSON {
 			$output = trim($output, ",\n");
 			$output = $output."\n]";
 		}
-		fwrite($out_handle, $output);
-		fclose($out_handle);
-
-		echo 'JSON Created';
+		if (NULL == $testing) {
+			fwrite($out_handle, $output);
+			fclose($out_handle);
+			echo 'JSON Created<br />';
+		}
+		else {
+			$output = str_replace("\n", "", $output);
+			$output = str_replace("\t", "", $output);
+			return $output;
+		}
 	}
 }
 ?>
