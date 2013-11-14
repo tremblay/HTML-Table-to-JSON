@@ -16,7 +16,7 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $useFirstColumnAsRowName, $tableID = '', $ignoreCols = array(0 => 'nil')) {
+	public function tableToJSON($url, $firstColumnIsRowName, $tableID = '', $ignoreCols = array(0 => 'nil')) {
 		$ignoring = FALSE;
 		if (!is_array($ignoreCols))
 			echo('ignoreCols must be an array. Did not ignore any columns.<br />');
@@ -115,7 +115,7 @@ class HTMLTable2JSON {
 			$length = $end_pos - $start_pos;
 			$temp = substr($table, $start_pos, $length);
 			$table_row_object = new TableRow();
-			if ($useFirstColumnAsRowName){
+			if ($firstColumnIsRowName){
 				// Get Header from column 1 and trim out column 1
 				$inner_pos_start = stripos($temp, '<td');
 				$inner_pos_start = stripos($temp, '>', $inner_pos_start) + strlen('>');
@@ -182,7 +182,7 @@ class HTMLTable2JSON {
 						else $span_number = 1;
 						$column_array[$i]->addCell($cell_name, $row_header, $span_number);
 					
-						if(!$useFirstColumnAsRowName){
+						if(!$firstColumnIsRowName){
 							$column_header = $column_array[$i]->getName();
 							$table_row_object->addAttributePair($column_header, $cell_name);
 						}
@@ -197,7 +197,7 @@ class HTMLTable2JSON {
 				// set up next pass through loop
 				$inner_pos_start = stripos($temp, '<td');
 			}
-			if (!$useFirstColumnAsRowName) {
+			if (!$firstColumnIsRowName) {
 				array_push($row_array, $table_row_object);
 			}
 			$start_pos = stripos($table, '</tbody');
@@ -211,7 +211,7 @@ class HTMLTable2JSON {
 		if (false == ($out_handle = fopen($outfile, 'w')))
 			die('Failed to create output file.');
 
-		if($useFirstColumnAsRowName) {
+		if($firstColumnIsRowName) {
 			$output = "{";
 			foreach($column_array as &$col) {
 				if ($col->hasCells())
