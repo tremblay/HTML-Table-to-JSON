@@ -51,7 +51,7 @@ class HTMLTable2JSON {
 		// Pull table out of HTML
 		$table_str = '<table id="'.$tableID;
 		$start_pos = stripos($html, $table_str);
-		$end_pos = stripos($html, '</table>', $start_pos);
+		$end_pos = stripos($html, '</table>', $start_pos) + strlen('</table>');
 		$length = $end_pos - $start_pos;
 		$table = substr($html, $start_pos, $length);
 		$permanent_table = $table;
@@ -59,16 +59,19 @@ class HTMLTable2JSON {
 		// Set up arrays
 		$column_array = array();
 		$row_array = array();
-		$header_start = stripos($table, '<thead>') + strlen('<thead>');
+		$header_start = stripos($table, '<th');
 		if (false !== $header_start) {
-			$header_end = stripos($table, '</thead>');
-			$header_end += strlen('</thead>');
+			$header_end = stripos($table, '<thead>');
+			if (false !== $header_end)
+				$header_start = stripos($table, '<th', $header_end + 1);
+
+			$header_end = stripos($table, '</tr>');
+			$header_end += strlen('</tr>');
 			$header_length = $header_end - $header_start;
 			$header = substr($table, $header_start, $header_length);
 
-			$header_start = stripos($header, '<th');
 			for ($i = 0; false !== $header_start; $i++) {
-				$header_start = stripos($header, '>', $header_start) + strlen('>');
+				$header_start = stripos($header, '>') + strlen('>');
 				$header_end = stripos($header, '</th>', $header_start);
 				if ($header_end != $header_start) {
 					$header_length = $header_end - $header_start;
@@ -119,6 +122,7 @@ class HTMLTable2JSON {
 			$end_pos += strlen('</tr>');
 			$length = $end_pos - $start_pos;
 			$temp = substr($table, $start_pos, $length);
+
 			$table_row_object = new TableRow();
 			if ($firstColIsRowName){
 				// Get Header from column 1 and trim out column 1
@@ -206,8 +210,8 @@ class HTMLTable2JSON {
 			if (!$firstColIsRowName) {
 				array_push($row_array, $table_row_object);
 			}
-			$start_pos = stripos($table, '</tbody');
-			$start_pos += strlen('</tbody');
+			$start_pos = stripos($table, '</table');
+			$start_pos += strlen('</table');
 			$length = $start_pos - $end_pos;
 			$table = substr($table, $end_pos, $length);
 			$start_pos = stripos($table, '<tr');

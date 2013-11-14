@@ -66,10 +66,9 @@ else {
 $tests++;
 
 
-/*
+
 echo '<br />';
 // Tests: 	basic usage without thead or tbody
-//				NOT IMPLEMENTED
 $table = "<table id=\"test-table\"><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></table>";
 $helper = new HTMLTable2JSON();
 $code_output = $helper->tableToJSON('', false, null, null, $table);
@@ -84,7 +83,7 @@ else {
 	$failed++;
 }
 $tests++;
-*/
+
 
 
 // NOT IMPLEMENTED:
