@@ -16,7 +16,7 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $firstColumnIsRowName, $tableID = '', $ignoreCols = array(0 => 'nil')) {
+	public function tableToJSON($url, $firstColumnIsRowName = TRUE, $tableID = '', $ignoreCols = array(0 => 'nil')) {
 		$ignoring = FALSE;
 		if (!is_array($ignoreCols))
 			echo('ignoreCols must be an array. Did not ignore any columns.<br />');
