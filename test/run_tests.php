@@ -53,7 +53,7 @@ echo '<br />';
 //			basic usage with thead and tbody
 $table = "<table id=\"test-table\"><thead><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr></thead><tbody><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></tbody></table>";
 $helper = new HTMLTable2JSON();
-$code_output = $helper->tableToJSON('', false, null, null, $table);
+$code_output = $helper->tableToJSON('', false, null, null, null, null, $table);
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
 $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Points\":\"50\"},{\"First Name\":\"Eve\", \"Last Name\":\"Jackson\", \"Points\":\"94\"},{\"First Name\":\"John\", \"Last Name\":\"Doe\", \"Points\":\"80\"}]";
@@ -71,7 +71,7 @@ echo '<br />';
 // Tests: 	basic usage without thead or tbody
 $table = "<table id=\"test-table\"><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></table>";
 $helper = new HTMLTable2JSON();
-$code_output = $helper->tableToJSON('', false, null, null, $table);
+$code_output = $helper->tableToJSON('', false, null, null, null, null, $table);
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
 $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Points\":\"50\"},{\"First Name\":\"Eve\", \"Last Name\":\"Jackson\", \"Points\":\"94\"},{\"First Name\":\"John\", \"Last Name\":\"Doe\", \"Points\":\"80\"}]";
@@ -95,7 +95,7 @@ echo '<br />';
 // Tests: 	ignore column 0
 $table = "<table id=\"test-table\"><thead><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr></thead><tbody><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></tbody></table>";
 $helper = new HTMLTable2JSON();
-$code_output = $helper->tableToJSON('', false, null, array(0 => 0), $table);
+$code_output = $helper->tableToJSON('', false, null, array(0 => 0), null, null, $table);
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
 $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"Jackson\", \"Points\":\"94\"},{\"Last Name\":\"Doe\", \"Points\":\"80\"}]";
@@ -115,7 +115,7 @@ echo '<br />';
 // Tests:	include hidden row
 $table = "<table id=\"test-table\"><thead><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr></thead><tbody><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr style=\"display: none;\"><td>John</td><td>Doe</td><td>80</td></tr></tbody></table>";
 $helper = new HTMLTable2JSON();
-$code_output = $helper->tableToJSON('', false, null, array(0 => 0), $table);
+$code_output = $helper->tableToJSON(' ', false, null, array(0 => 0), null, null, $table);
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
 $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"Jackson\", \"Points\":\"94\"},{\"Last Name\":\"Doe\", \"Points\":\"80\"}]";
@@ -132,12 +132,32 @@ $tests++;
 	//				treat first row as column headers regardless of tags
 	//				onlyColumns option
 	//				interaction btwn onlyColumns and ignoresColumns -- onlyColumns shoudl trump
-	//				take column headers as input:
+
+
+
+// Tests:	Take column headers as input: first row is overriden by supplied headers
+echo '<br />';
+// Tests:	include hidden row
+$table = "<table id=\"test-table\"><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></table>";
+$helper = new HTMLTable2JSON();
+$code_output = $helper->tableToJSON(' ', false, null, null, array(2 => 'Score'), null, $table);
+if (false == ($out_handle = fopen($outfile, 'w')))
+	die('Failed to create output file.');
+$test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Score\":\"50\"},{\"First Name\":\"Eve\", \"Last Name\":\"Jackson\", \"Score\":\"94\"},{\"First Name\":\"John\", \"Last Name\":\"Doe\", \"Score\":\"80\"}]";
+if($code_output == $test_output)
+	$passed++;
+else {
+	echo 'test '.$tests.' failed.';
+	$failed++;
+}
+$tests++;
+
+
 		//											treat all rows as data
-		//											ignore first row
 		//											test interaction with ignoresColumns
 		//											test interaction with onlyColumns
-		// 			nested tables
+	// 				nested tables
+
 
 
 if ($passed == $tests)

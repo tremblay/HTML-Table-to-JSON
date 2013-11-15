@@ -16,19 +16,26 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = array(0 => 'nil'), $testing = NULL) {
+	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $testing = NULL) {
 		$ignoring = FALSE;
-		if (!is_array($ignoreCols))
-			echo('ignoreCols must be an array. Did not ignore any columns.<br />');
-		else  
-			for ($i = 0; $i < count($ignoreCols); $i++) {
-				if(is_int($ignoreCols[0])) {
-					$ignoring = TRUE;
-					break;
-				}
+		if (NULL != $ignoreCols) {
+			if (!is_array($ignoreCols)) {
+				echo('ignoreCols must be an array. Did not ignore any columns.<br />');
+				$ignoreCols = NULL;
 			}
-		if (!$ignoring)
-			$ignoreCols = NULL;
+			else  
+				for ($i = 0; $i < count($ignoreCols); $i++) {
+					if(is_int($ignoreCols[0])) {
+						$ignoring = TRUE;
+						break;
+					}
+				}
+		}
+		if (NULL != $headers)
+			if (!is_array($headers)) {
+				echo('headers must be an array. Will not change any headers.<br />');
+				$headers = NULL;
+			}
 
 		if (NULL == $testing) {
 			// Get html using curl
@@ -104,6 +111,10 @@ class HTMLTable2JSON {
 		
 		$table = substr($table, $start_pos, $length - $start_pos);
 
+		if (NULL != $headers)
+			foreach ($headers as $key => $value) {
+				$column_array[$key]->setName($value);
+			}
 		// Set up array for skipping columns that don't show up in HTML
 			// due to rowspan > 1 in the previous row
 		$skipped_columns = array();

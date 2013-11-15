@@ -25,6 +25,10 @@ class TableColumn {
 		return $this->column_header;
 	}
 
+	public function setName($new_header){
+		$this->column_header = $new_header;
+	}
+
 	public function hasCells(){
 		return (count($this->cells) >= 1);
 	}
