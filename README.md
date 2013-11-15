@@ -28,27 +28,31 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Default: `''`
 - `ignoreColumns`
   - Array of column indexes to ignore.
-  - Format: `array(0 => firstColToIgnore, 1 => secondColToIgnore)` OR `array(firstIndex, secondIndex)`
+  - Format: `array(0 => firstColToIgnore, 1 => secondColToIgnore)` OR `array(firstIndex, secondIndex)`.
   - Default: `NULL`
 - `headers`
-  - Array of header names
-  - Format: `array(colNum1 => header1, colNum2 => header2)`
+  - Array of header names.
+  - Format: `array(colNum1 => header1, colNum2 => header2)`.
   - Default: `NULL`
 - `firstRowIsData`
-  - Boolean indicating whether the first row contains data (not headers)
+  - Boolean indicating whether the first row contains data (not headers).
   - Choosing `TRUE` treats the first row as data regardless of `<th>` tags. DO NOT choose this if there are headers in the first row that you want to override.
   - Default: `FALSE`
 - `onlyColumns`
   - Array of column indexes to include; all others are ignored.
-  - Format: `array(0 => firstColToInclude, 1 => secondColToInclude)` OR `array(firstIndex, secondIndex)`
+  - Format: `array(0 => firstColToInclude, 1 => secondColToInclude)` OR `array(firstIndex, secondIndex)`.
   - Default `NULL`
 - `arrangeByRows`
   - Choosing `FALSE` treats cells as discrete objects. Cells are arranged in arrays by column, where each cell has properties of name, column title, row title, and span number. 
   - Choosing `TRUE` treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with `column_title : cell_title` pairs as attributes.
   - Default: `FALSE`
+- `ignoreHidden`
+  - Boolean indicating whether rows tagged with `style=\"display: none;` should appear in output.
+  - Setting `TRUE` will suppress hidden rows.
+  - Default: `FALSE`
 - `testing`
   - String representing an HTML table. Allows user to manually input a table for conversion, instead of scraping from a webpage.
-  - Ignores whatever value is in `url`
+  - Ignores whatever value is in `url`.
   - Causes tableToJSON to return the JSON as a string (instead of creating a file with it).
   - Default: `NULL`
 

@@ -16,7 +16,7 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $onlyColumns = FALSE, $arrangeByRow = FALSE, $testing = NULL) {
+	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $onlyColumns = FALSE, $arrangeByRow = FALSE, $ignoreHidden = FALSE, $testing = NULL) {
 		$ignoring = FALSE;
 		$excluding = FALSE;
 		if (NULL != $onlyColumns){
@@ -155,121 +155,122 @@ class HTMLTable2JSON {
 		// Loop through the rows
 		$start_pos = stripos($table, '<tr');
 		for ($j = 0; false !== $start_pos; $j++) {
-			// If this row doens't have a skipped array, add one
-			if (count($skipped_columns) <= $j + 1) {
-				$row_with_skipped_columns = array();
-				array_push($skipped_columns, $row_with_skipped_columns);
-			}
-
 			// Create temp string with JUST the row we're currently looking at
-			$end_pos = stripos($table, '</tr>', $start_pos); //HERE??
+			$end_pos = stripos($table, '</tr>', $start_pos);
 			$end_pos += strlen('</tr>');
 			$length = $end_pos - $start_pos;
 			$temp = substr($table, $start_pos, $length);
 
-			if ($firstRowIsData && FALSE !== stripos($temp, '<th')){
-				$cell_tag = '<th';
-				$end_tag = '</th>';
-			}
-			else {
-				$cell_tag = '<td';
-				$end_tag = '</td>';
-			}
-			if ($firstColIsRowName){
-				// Get Header from column 1 and trim out column 1
-				$inner_pos_start = stripos($temp, $cell_tag);
-				$inner_pos_start = stripos($temp, '>', $inner_pos_start) + strlen('>');
-				$inner_pos_end = stripos($temp, $end_tag);
-				$inner_len = $inner_pos_end - $inner_pos_start;
-				$row_header = substr($temp, $inner_pos_start, $inner_len);
-				$row_header = str_replace('<br />', '', $row_header);
-				$row_header = trim($row_header);
-				
-				$inner_pos_start = $inner_pos_end + strlen($end_tag);
-				$inner_pos_end = stripos($temp, '</tr>') + strlen('</tr>');
-				$inner_len = $inner_pos_end - $inner_pos_start;
-				$temp = substr($temp, $inner_pos_start, $inner_len);
-				$table_row_object = new TableRow($row_header);
-				$i = 1;
-			}
-			else {
-				$row_header = 'Row '.$j;
-				$table_row_object = new TableRow();
-				$i = 0;
-			}
-
-			// Loop through the columns
-			$inner_pos_start = stripos($temp, $cell_tag);
-			for ($i; false !== $inner_pos_start; $i++) {
-				// Skip over columns in the array created by rowspans
-				while (in_array($i, $skipped_columns[$j]))
-					$i++;
-
-				// Skip over user specified columns
-				if ((NULL == $ignoreCols || !in_array($i, $ignoreCols)) && (NULL == $onlyColumns || in_array($i, $onlyColumns))){
-					$inner_pos_start += strlen($cell_tag);
-					$inner_pos_end = stripos($temp, $end_tag, $inner_pos_start) + strlen($end_tag);
-					$inner_len = $inner_pos_end - $inner_pos_start;
-					$cell = substr($temp, $inner_pos_start, $inner_len);
-
-					$inner_pos_end = stripos($cell, $end_tag);
-					$inner_pos_start = stripos($cell, '>') + strlen('>');
-					if ($inner_pos_end != $inner_pos_start) {
-						$inner_len = $inner_pos_end - $inner_pos_start;
-						$cell_name = substr($cell, $inner_pos_start, $inner_len);
-						$cell_name = str_replace('"', '\"', $cell_name);
-						$cell_name = str_replace('<br />', '', $cell_name);
-						$cell_name = trim($cell_name);
-
-						$other_pos = stripos($cell, ' rowspan-');
-						if (false === $other_pos)
-							$spans_one = true;
-						else $spans_one = false;
-
-						if(!$spans_one) {
-							$inner_pos_start = stripos($cell, ' rowspan-') + strlen(' rowspan-');
-							$inner_pos_end = stripos($cell, '">');
-							$inner_len = $inner_pos_end - $inner_pos_start;
-							$span = substr($cell, $inner_pos_start, $inner_len);
-							$span_number = intval($span);
-							$span_no = $span_number;
-							// Set up skipped columns to skip over columns missed in HTML in future rows due to rowspan > 1
-							for ($k = $j + 1; $span_no > 1; $span_no--, $k++) {
-								if (count($skipped_columns) <= $k) {
-									$another_row_with_skipped_columns = array();
-									array_push($skipped_columns, $another_row_with_skipped_columns);
-								}
-								array_push($skipped_columns[$k], $i);
-							}
-						}
-						else $span_number = 1;
-						for ($m = 0; $i > count($column_array); $m++)
-							array_push($column_array, new TableColumn('Column'.count($column_array)));
-						if (count($column_array) == $i)
-							array_push($column_array, new TableColumn('Column '.$i));
-						$column_array[$i]->addCell($cell_name, $row_header, $span_number);
-					
-						if($arrangeByRow){
-							$column_header = $column_array[$i]->getName();
-							$table_row_object->addAttributePair($column_header, $cell_name);
-						}
-					}
+			if (!$ignoreHidden || (FALSE === stripos($temp, "style=\"display: none;\""))){
+				// If this row doens't have a skipped array, add one
+				if (count($skipped_columns) <= $j + 1) {
+					$row_with_skipped_columns = array();
+					array_push($skipped_columns, $row_with_skipped_columns);
 				}
-				// Cut out 
-				$inner_pos_end = stripos($temp, $end_tag) + strlen($end_tag);
-				$inner_pos_start = stripos($temp, '</tr>') + strlen('</tr>');
-				$inner_len = $inner_pos_start - $inner_pos_end;
-				$temp = substr($temp, $inner_pos_end, $inner_len);
-
-				// set up next pass through loop
-				if (FALSE === stripos($temp, '<th')){
+				if ($firstRowIsData && FALSE !== stripos($temp, '<th')){
+					$cell_tag = '<th';
+					$end_tag = '</th>';
+				}
+				else {
 					$cell_tag = '<td';
 					$end_tag = '</td>';
 				}
+				if ($firstColIsRowName){
+					// Get Header from column 1 and trim out column 1
+					$inner_pos_start = stripos($temp, $cell_tag);
+					$inner_pos_start = stripos($temp, '>', $inner_pos_start) + strlen('>');
+					$inner_pos_end = stripos($temp, $end_tag);
+					$inner_len = $inner_pos_end - $inner_pos_start;
+					$row_header = substr($temp, $inner_pos_start, $inner_len);
+					$row_header = str_replace('<br />', '', $row_header);
+					$row_header = trim($row_header);
+					
+					$inner_pos_start = $inner_pos_end + strlen($end_tag);
+					$inner_pos_end = stripos($temp, '</tr>') + strlen('</tr>');
+					$inner_len = $inner_pos_end - $inner_pos_start;
+					$temp = substr($temp, $inner_pos_start, $inner_len);
+					$table_row_object = new TableRow($row_header);
+					$i = 1;
+				}
+				else {
+					$row_header = 'Row '.$j;
+					$table_row_object = new TableRow();
+					$i = 0;
+				}
+
+				// Loop through the columns
 				$inner_pos_start = stripos($temp, $cell_tag);
-			}
-			if ($arrangeByRow) {
-				array_push($row_array, $table_row_object);
+				for ($i; false !== $inner_pos_start; $i++) {
+					// Skip over columns in the array created by rowspans
+					while (in_array($i, $skipped_columns[$j]))
+						$i++;
+
+					// Skip over user specified columns
+					if ((NULL == $ignoreCols || !in_array($i, $ignoreCols)) && (NULL == $onlyColumns || in_array($i, $onlyColumns))){
+						$inner_pos_start += strlen($cell_tag);
+						$inner_pos_end = stripos($temp, $end_tag, $inner_pos_start) + strlen($end_tag);
+						$inner_len = $inner_pos_end - $inner_pos_start;
+						$cell = substr($temp, $inner_pos_start, $inner_len);
+
+						$inner_pos_end = stripos($cell, $end_tag);
+						$inner_pos_start = stripos($cell, '>') + strlen('>');
+						if ($inner_pos_end != $inner_pos_start) {
+							$inner_len = $inner_pos_end - $inner_pos_start;
+							$cell_name = substr($cell, $inner_pos_start, $inner_len);
+							$cell_name = str_replace('"', '\"', $cell_name);
+							$cell_name = str_replace('<br />', '', $cell_name);
+							$cell_name = trim($cell_name);
+
+							$other_pos = stripos($cell, ' rowspan-');
+							if (false === $other_pos)
+								$spans_one = true;
+							else $spans_one = false;
+
+							if(!$spans_one) {
+								$inner_pos_start = stripos($cell, ' rowspan-') + strlen(' rowspan-');
+								$inner_pos_end = stripos($cell, '">');
+								$inner_len = $inner_pos_end - $inner_pos_start;
+								$span = substr($cell, $inner_pos_start, $inner_len);
+								$span_number = intval($span);
+								$span_no = $span_number;
+								// Set up skipped columns to skip over columns missed in HTML in future rows due to rowspan > 1
+								for ($k = $j + 1; $span_no > 1; $span_no--, $k++) {
+									if (count($skipped_columns) <= $k) {
+										$another_row_with_skipped_columns = array();
+										array_push($skipped_columns, $another_row_with_skipped_columns);
+									}
+									array_push($skipped_columns[$k], $i);
+								}
+							}
+							else $span_number = 1;
+							for ($m = 0; $i > count($column_array); $m++)
+								array_push($column_array, new TableColumn('Column'.count($column_array)));
+							if (count($column_array) == $i)
+								array_push($column_array, new TableColumn('Column '.$i));
+							$column_array[$i]->addCell($cell_name, $row_header, $span_number);
+						
+							if($arrangeByRow){
+								$column_header = $column_array[$i]->getName();
+								$table_row_object->addAttributePair($column_header, $cell_name);
+							}
+						}
+					}
+					// Cut out 
+					$inner_pos_end = stripos($temp, $end_tag) + strlen($end_tag);
+					$inner_pos_start = stripos($temp, '</tr>') + strlen('</tr>');
+					$inner_len = $inner_pos_start - $inner_pos_end;
+					$temp = substr($temp, $inner_pos_end, $inner_len);
+
+					// set up next pass through loop
+					if (FALSE === stripos($temp, '<th')){
+						$cell_tag = '<td';
+						$end_tag = '</td>';
+					}
+					$inner_pos_start = stripos($temp, $cell_tag);
+				}
+				if ($arrangeByRow) {
+					array_push($row_array, $table_row_object);
+				}
 			}
 			$start_pos = stripos($table, '</table');
 			$start_pos += strlen('</table');
