@@ -22,7 +22,7 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
 ### Optional Arguments
 - `firstColIsRowName`
   - Boolean indicating whether the first column in the table should be parsed as the title for all values in the row.
-  - Choosing `TRUE` results in cells arranged in an array, where each cell has properties of name, column title, row title, and span number. 
+  - Choosing `TRUE` treats cells as discrete objects. Cells are arranged in arrays by column, where each cell has properties of name, column title, row title, and span number. 
   - Choosing `FALSE` treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with `column_title : cell_title` pairs as attributes.
   - Default: `TRUE`
 - `tableID`
@@ -37,7 +37,7 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Format: `array(colNum1 => header1, colNum2 => header2)`
   - Default: `NULL`
 - `firstRowIsData`
-  - Boolean indicatign whether the first row contains data (not headers)
+  - Boolean indicating whether the first row contains data (not headers)
   - Choosing `TRUE` treats the first row as data regardless of `<th>` tags. DO NOT choose this if there are headers in the first row that you want to override.
   - Default: `FALSE`
 - `onlyColumns`
