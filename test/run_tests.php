@@ -135,7 +135,7 @@ $tests++;
 
 
 
-// Tests:	Take column headers as input: first row is overriden by supplied headers
+// Tests:	Take column headers as input: headers in irst row are overriden by supplied headers
 echo '<br />';
 // Tests:	include hidden row
 $table = "<table id=\"test-table\"><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></table>";
@@ -152,6 +152,21 @@ else {
 }
 $tests++;
 
+echo '<br />';
+// Tests:	test when headers are not provided by the table, but ARE provided as an argument
+$table = "<table id=\"test-table\"></tr><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></table>";
+$helper = new HTMLTable2JSON();
+$code_output = $helper->tableToJSON(' ', false, null, null, array(0 => 'First Name', 1 => 'Last Name', 2 => 'Score'), null, $table);
+if (false == ($out_handle = fopen($outfile, 'w')))
+	die('Failed to create output file.');
+$test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Score\":\"50\"},{\"First Name\":\"Eve\", \"Last Name\":\"Jackson\", \"Score\":\"94\"},{\"First Name\":\"John\", \"Last Name\":\"Doe\", \"Score\":\"80\"}]";
+if($code_output == $test_output)
+	$passed++;
+else {
+	echo 'test '.$tests.' failed.';
+	$failed++;
+}
+$tests++;
 
 		//											treat all rows as data
 		//											test interaction with ignoresColumns

@@ -113,7 +113,12 @@ class HTMLTable2JSON {
 
 		if (NULL != $headers)
 			foreach ($headers as $key => $value) {
-				$column_array[$key]->setName($value);
+				for ($m = 0; $key > count($column_array); $m++)
+					array_push($column_array, new TableColumn('Column'.$m));
+				if (count($column_array) == $key)
+					array_push($column_array, new TableColumn($value));
+				else
+					$column_array[$key]->setName($value);
 			}
 		// Set up array for skipping columns that don't show up in HTML
 			// due to rowspan > 1 in the previous row
