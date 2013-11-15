@@ -16,21 +16,37 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $testing = NULL) {
+	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $onlyColumns = FALSE, $testing = NULL) {
 		$ignoring = FALSE;
-		if (NULL != $ignoreCols) {
+		$excluding = FALSE;
+		if (NULL != $onlyColumns){
+			if (!is_array($onlyColumns)) {
+				echo('onlyColumns must be an array. Did not ignore any columns.<br />');
+				$onlyColumns = NULL;
+			}
+			else  
+				for ($i = 0; $i < count($onlyColumns); $i++) {
+					if(is_int($onlyColumns[$i])) {
+						$excluding = TRUE;
+						$ignoreCols = NULL;
+						break;
+					}
+				}
+		}
+		else if (NULL != $ignoreCols) {
 			if (!is_array($ignoreCols)) {
 				echo('ignoreCols must be an array. Did not ignore any columns.<br />');
 				$ignoreCols = NULL;
 			}
 			else  
 				for ($i = 0; $i < count($ignoreCols); $i++) {
-					if(is_int($ignoreCols[0])) {
+					if(is_int($ignoreCols[$i])) {
 						$ignoring = TRUE;
 						break;
 					}
 				}
 		}
+
 		if (NULL != $headers)
 			if (!is_array($headers)) {
 				echo('headers must be an array. Will not change any headers.<br />');
@@ -190,7 +206,7 @@ class HTMLTable2JSON {
 					$i++;
 
 				// Skip over user specified columns
-				if (NULL == $ignoreCols || !in_array($i, $ignoreCols)) {
+				if ((NULL == $ignoreCols || !in_array($i, $ignoreCols)) && (NULL == $onlyColumns || in_array($i, $onlyColumns))){
 					$inner_pos_start += strlen($cell_tag);
 					$inner_pos_end = stripos($temp, $end_tag, $inner_pos_start) + strlen($end_tag);
 					$inner_len = $inner_pos_end - $inner_pos_start;
@@ -227,6 +243,8 @@ class HTMLTable2JSON {
 							}
 						}
 						else $span_number = 1;
+						for ($m = 0; $i > count($column_array); $m++)
+							array_push($column_array, new TableColumn('Column'.count($column_array)));
 						if (count($column_array) == $i)
 							array_push($column_array, new TableColumn('Column '.$i));
 						$column_array[$i]->addCell($cell_name, $row_header, $span_number);

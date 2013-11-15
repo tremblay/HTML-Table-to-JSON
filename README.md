@@ -30,7 +30,7 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Default: `''`
 - `ignoreColumns`
   - Array of column indexes to ignore.
-  - Format: `array(0 => firstColToIgnore, 1 => secondColToIgnore)`
+  - Format: `array(0 => firstColToIgnore, 1 => secondColToIgnore)` OR `array(firstIndex, secondIndex)`
   - Default: `NULL`
 - `headers`
   - Array of header names
@@ -40,6 +40,10 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Boolean indicatign whether the first row contains data (not headers)
   - Choosing `TRUE` treats the first row as data regardless of `<th>` tags. DO NOT choose this if there are headers in the first row that you want to override.
   - Default: `FALSE`
+- `onlyColumns`
+  - Array of column indexes to include; all others are ignored.
+  - Format: `array(0 => firstColToInclude, 1 => secondColToInclude)` OR `array(firstIndex, secondIndex)`
+  - Default `NULL`
 - `testing`
   - String representing an HTML table. Allows user to manually input a table for conversion, instead of scraping from a webpage.
   - Ignores whatever value is in `url`
