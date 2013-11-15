@@ -102,8 +102,6 @@ $table = "<table id=\"test-table\"><thead><tr><th>First Name</th><th>Last Name</
 $helper = new HTMLTable2JSON();
 $code_output = $helper->tableToJSON('', false, null, array(0), null, null, null, true, true, $table);
 $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"Jackson\", \"Points\":\"94\"}]";
-echo $code_output.'<br />';
-echo $test_output.'<br />';
 
 if($code_output == $test_output)
 	$passed++;
