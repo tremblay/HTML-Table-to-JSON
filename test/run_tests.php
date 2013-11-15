@@ -137,9 +137,10 @@ else {
 $tests++;
 
 // Tests:	test when headers are not provided by the table, but ARE provided as an argument
+//			Note: You MUST set firstRowIsData to TRUE if there is not a header row in the table.
 $table = "<table id=\"test-table\"><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></table>";
 $helper = new HTMLTable2JSON();
-$code_output = $helper->tableToJSON(' ', false, null, null, array(0 => 'First Name', 1 => 'Last Name', 2 => 'Score'), null, $table);
+$code_output = $helper->tableToJSON(' ', false, null, null, array(0 => 'First Name', 1 => 'Last Name', 2 => 'Score'), TRUE, $table);
 $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Score\":\"50\"},{\"First Name\":\"Eve\", \"Last Name\":\"Jackson\", \"Score\":\"94\"},{\"First Name\":\"John\", \"Last Name\":\"Doe\", \"Score\":\"80\"}]";
 if($code_output == $test_output)
 	$passed++;
