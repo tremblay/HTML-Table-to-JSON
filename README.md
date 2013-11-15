@@ -38,7 +38,7 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Default: `NULL`
 - `firstRowIsData`
   - Boolean indicatign whether the first row contains data (not headers)
-  - Choosing `TRUE` causes the program to treat the first row as data regardless of `<th>` tags (NOT IMPLEMENTED).
+  - Choosing `TRUE` treats the first row as data regardless of `<th>` tags. DO NOT choose this if there are headers in the first row that you want to override.
   - Default: `FALSE`
 - `testing`
   - String representing an HTML table. Allows user to manually input a table for conversion, instead of scraping from a webpage.
