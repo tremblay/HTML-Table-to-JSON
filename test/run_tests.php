@@ -233,6 +233,26 @@ $tests++;
 
 // NOT IMPLEMENTED:		nested tables
 
+
+// Tests: Table with headers in first column, printed non-default style
+$helper->tableToJSON('http://kdic.grinnell.edu/programs/schedule/', TRUE, null, null, null, false, array(1), true);
+if (false == ($out_handle = fopen($outfile, 'w')))
+	die('Failed to create output file.');
+$output = "{\t\"8:00PM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\\\">The Jenn N' Juice Show</a>\"\n\t},\n\t\"10:00PM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/west-coast-dub/ \\\">West Coast Dub</a>\"\n\t},\n\t\"11:00PM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/good-touches/\\\">Good Touches</a>\"\n\t},\n\t\"12:00AM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\\\">The Ray KDIC Variety Hour</a>\"\n\t}\n}";
+fwrite($out_handle, $output);
+fclose($out_handle);
+
+$code_output = md5_file('output.json');
+$test_output = md5_file('test_output.json');
+if($code_output == $test_output)
+	$passed++;
+else {
+	echo '<br />test '.$tests.' failed.';
+	$failed++;
+}
+$tests++;
+
+
 if ($passed == $tests)
 	echo '<br />Ran '.$tests.' tests. All passed!';
 else

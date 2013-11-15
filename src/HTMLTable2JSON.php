@@ -167,8 +167,6 @@ class HTMLTable2JSON {
 			$length = $end_pos - $start_pos;
 			$temp = substr($table, $start_pos, $length);
 
-			$table_row_object = new TableRow();
-
 			if ($firstRowIsData && FALSE !== stripos($temp, '<th')){
 				$cell_tag = '<th';
 				$end_tag = '</th>';
@@ -191,10 +189,12 @@ class HTMLTable2JSON {
 				$inner_pos_end = stripos($temp, '</tr>') + strlen('</tr>');
 				$inner_len = $inner_pos_end - $inner_pos_start;
 				$temp = substr($temp, $inner_pos_start, $inner_len);
+				$table_row_object = new TableRow($row_header);
 				$i = 1;
 			}
 			else {
 				$row_header = 'Row '.$j;
+				$table_row_object = new TableRow();
 				$i = 0;
 			}
 
@@ -278,17 +278,25 @@ class HTMLTable2JSON {
 			$start_pos = stripos($table, '<tr');
 		}
 
-		$outfile = 'output.json';
-		if (false == ($out_handle = fopen($outfile, 'w')))
-			die('Failed to create output file.');
+		if (NULL == $testing) {
+			$outfile = 'output.json';
+			if (false == ($out_handle = fopen($outfile, 'w')))
+				die('Failed to create output file.');
+		}
 
+		// Create the JSON formatted output
 		if($arrangeByRow) {
-			$output = "[";
+			if ($firstColIsRowName)
+				$output = "{";
+			else $output = "[";
 			foreach($row_array as &$row) {
-				$output = $output.$row->writeJSON().",\n";
+				if ($row->hasCells())
+					$output = $output.$row->writeJSON().",\n";
 			}
 			$output = trim($output, ",\n");
-			$output = $output."\n]";			
+			if ($firstColIsRowName)
+				$output = $output."\n}";
+			else $output = $output."\n]";
 		}
 		else {
 			$output = "{";
@@ -299,6 +307,7 @@ class HTMLTable2JSON {
 			$output = trim($output, ",\n");
 			$output = $output."\n}";
 		}
+
 		if (NULL == $testing) {
 			fwrite($out_handle, $output);
 			fclose($out_handle);
