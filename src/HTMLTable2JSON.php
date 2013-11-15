@@ -16,7 +16,7 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $onlyColumns = FALSE, $testing = NULL) {
+	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $onlyColumns = FALSE, $arrangeByRow = FALSE, $testing = NULL) {
 		$ignoring = FALSE;
 		$excluding = FALSE;
 		if (NULL != $onlyColumns){
@@ -249,7 +249,7 @@ class HTMLTable2JSON {
 							array_push($column_array, new TableColumn('Column '.$i));
 						$column_array[$i]->addCell($cell_name, $row_header, $span_number);
 					
-						if(!$firstColIsRowName){
+						if($arrangeByRow){
 							$column_header = $column_array[$i]->getName();
 							$table_row_object->addAttributePair($column_header, $cell_name);
 						}
@@ -268,7 +268,7 @@ class HTMLTable2JSON {
 				}
 				$inner_pos_start = stripos($temp, $cell_tag);
 			}
-			if (!$firstColIsRowName) {
+			if ($arrangeByRow) {
 				array_push($row_array, $table_row_object);
 			}
 			$start_pos = stripos($table, '</table');
@@ -282,7 +282,15 @@ class HTMLTable2JSON {
 		if (false == ($out_handle = fopen($outfile, 'w')))
 			die('Failed to create output file.');
 
-		if($firstColIsRowName) {
+		if($arrangeByRow) {
+			$output = "[";
+			foreach($row_array as &$row) {
+				$output = $output.$row->writeJSON().",\n";
+			}
+			$output = trim($output, ",\n");
+			$output = $output."\n]";			
+		}
+		else {
 			$output = "{";
 			foreach($column_array as &$col) {
 				if ($col->hasCells())
@@ -290,14 +298,6 @@ class HTMLTable2JSON {
 			}
 			$output = trim($output, ",\n");
 			$output = $output."\n}";
-		}
-		else {
-			$output = "[";
-			foreach($row_array as &$row) {
-				$output = $output.$row->writeJSON().",\n";
-			}
-			$output = trim($output, ",\n");
-			$output = $output."\n]";
 		}
 		if (NULL == $testing) {
 			fwrite($out_handle, $output);

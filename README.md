@@ -22,8 +22,11 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
 ### Optional Arguments
 - `firstColIsRowName`
   - Boolean indicating whether the first column in the table should be parsed as the title for all values in the row.
+<<<<<<< HEAD
   - Choosing `TRUE` treats cells as discrete objects. Cells are arranged in arrays by column, where each cell has properties of name, column title, row title, and span number. 
   - Choosing `FALSE` treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with `column_title : cell_title` pairs as attributes.
+=======
+>>>>>>> split up firstColIsRowName and arrangeByRow
   - Default: `TRUE`
 - `tableID`
   - String to contain the ID of the table. Allows user to specify a particular table. Default behavior simply grabs the first table encountered on the page.
@@ -44,6 +47,10 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Array of column indexes to include; all others are ignored.
   - Format: `array(0 => firstColToInclude, 1 => secondColToInclude)` OR `array(firstIndex, secondIndex)`
   - Default `NULL`
+- `arrangeByRows`
+  - Choosing `FALSE` results in cells arranged in an array, where each cell has properties of name, column title, row title, and span number. 
+  - Choosing `TRUE` treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with `column_title : cell_title` pairs as attributes. 
+  - Default: `FALSE`
 - `testing`
   - String representing an HTML table. Allows user to manually input a table for conversion, instead of scraping from a webpage.
   - Ignores whatever value is in `url`
