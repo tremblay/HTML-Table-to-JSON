@@ -3,7 +3,7 @@ HTML-Table-to-JSON
 
 Author: Colin Tremblay
 
-Date:   Friday, 15th November, 2013
+Date:   Saturday, 16th November, 2013
 
 ## About
 Easily scrape and parse a table stored on a web page.
@@ -45,7 +45,7 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Format: `array(0 => firstColToInclude, 1 => secondColToInclude)` OR `array(firstIndex, secondIndex)`.
   - Default `NULL`
 - `arrangeByRows`
-  - Choosing `FALSE` treats cells as discrete objects. Cells are arranged in arrays by column, where each cell has properties of name, column title, row title, and span number. 
+  - Choosing `FALSE` treats cells as discrete objects. Cells are arranged in arrays by column, where each cell has properties of name, column title, row title, span number, and URL (if applicable). 
   - Choosing `TRUE` treats each cell as a value for the attribute indicated in the column header. With this option, rows are arranged in an array, with `column_title : cell_title` pairs as attributes.
   - Default: `FALSE`
 - `ignoreHidden`
@@ -64,7 +64,7 @@ sample.php has examples of the correct usage.
 
 ### TODO
  - Override cell names/data
- - Handle html tags within a cell better (as attribute of the cell). ex: links within the cell
+ - Handle more html tags within a cell (links have been handled).
  - Do something with the style and/or class of a given cell, row, or column. This information could be useful in some cases and shouldn't be hard to access.
  - Code cleanup/refactor
 
