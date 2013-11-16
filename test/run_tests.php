@@ -21,7 +21,7 @@ $test_output = md5_file('test_output.json');
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo 'test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -29,10 +29,11 @@ $tests++;
 
 // Tests: 	setting options
 //			tables with some cells with rowspan > 1 
+//			parsing urls
 $helper->tableToJSON('http://kdic.grinnell.edu/programs/schedule/', true, 'wp-table-reloaded-id-6-no-1', array(0 => 0, 1 => 2, 2 => 3, 3 => 4, 4 => 5, 5 => 6, 6 => 7, 7 => 8, 8 => 9));
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
-$output = "{\"Monday\" : [\n\t{\"cell_text\" : \"<a href=\\\"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\\\">The Jenn N' Juice Show</a>\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"8:00PM\",\n\t\"spans\" : \"2\"},\n\t{\"cell_text\" : \"<a href=\\\"http://kdic.grinnell.edu/programs/shows/west-coast-dub/ \\\">West Coast Dub</a>\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"10:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"<a href=\\\"http://kdic.grinnell.edu/programs/shows/good-touches/\\\">Good Touches</a>\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"11:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"<a href=\\\"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\\\">The Ray KDIC Variety Hour</a>\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"12:00AM\",\n\t\"spans\" : \"1\"}]\n}";
+$output = "{\"Monday\" : [\n\t{\"cell_text\" : \"The Jenn N' Juice Show\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"8:00PM\",\n\t\"spans\" : \"2\"},\n\t{\"cell_text\" : \"West Coast Dub\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/west-coast-dub/ \",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"10:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"Good Touches\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/good-touches/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"11:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"The Ray KDIC Variety Hour\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"12:00AM\",\n\t\"spans\" : \"1\"}]\n}";
 fwrite($out_handle, $output);
 fclose($out_handle);
 
@@ -41,7 +42,7 @@ $test_output = md5_file('test_output.json');
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -56,7 +57,7 @@ $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Points\":\
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -71,7 +72,7 @@ $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Points\":\
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -91,7 +92,7 @@ $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"J
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -106,7 +107,7 @@ $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"J
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -120,7 +121,7 @@ $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"J
 if($code_output == $test_output && $test_output == $another_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -133,7 +134,7 @@ $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Points\":\
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -146,7 +147,7 @@ $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"J
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -160,7 +161,7 @@ $test_output = "[{\"Last Name\":\"Smith\", \"Points\":\"50\"},{\"Last Name\":\"J
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -175,7 +176,7 @@ $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Score\":\"
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -189,7 +190,7 @@ $test_output = "[{\"First Name\":\"Jill\", \"Last Name\":\"Smith\", \"Score\":\"
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -205,7 +206,7 @@ $test_output = "[{\"Column 0\":\"Jill\", \"Column 1\":\"Smith\", \"Column 2\":\"
 if($code_output == $test_output && $test_output == $another_output && $test_output == $third_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -221,7 +222,7 @@ $test_output = "[{\"Column 1\":\"Smith\", \"Column 2\":\"50\"},{\"Column 1\":\"J
 if($code_output == $test_output && $test_output == $another_output && $test_output == $third_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -237,7 +238,7 @@ $test_output = "[{\"Column 1\":\"Smith\", \"Column 2\":\"50\"},{\"Column 1\":\"J
 if($code_output == $test_output && $test_output == $another_output && $test_output == $third_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;
@@ -250,7 +251,7 @@ $tests++;
 $helper->tableToJSON('http://kdic.grinnell.edu/programs/schedule/', TRUE, null, null, null, false, array(1), true);
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
-$output = "{\t\"8:00PM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\\\">The Jenn N' Juice Show</a>\"\n\t},\n\t\"10:00PM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/west-coast-dub/ \\\">West Coast Dub</a>\"\n\t},\n\t\"11:00PM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/good-touches/\\\">Good Touches</a>\"\n\t},\n\t\"12:00AM\":{\n\t\t\"Monday\":\"<a href=\\\"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\\\">The Ray KDIC Variety Hour</a>\"\n\t}\n}";
+$output = "{\t\"8:00PM\":{\n\t\t\"Monday\":\"The Jenn N' Juice Show\"\n\t},\n\t\"10:00PM\":{\n\t\t\"Monday\":\"West Coast Dub\"\n\t},\n\t\"11:00PM\":{\n\t\t\"Monday\":\"Good Touches\"\n\t},\n\t\"12:00AM\":{\n\t\t\"Monday\":\"The Ray KDIC Variety Hour\"\n\t}\n}";
 fwrite($out_handle, $output);
 fclose($out_handle);
 
@@ -259,7 +260,7 @@ $test_output = md5_file('test_output.json');
 if($code_output == $test_output)
 	$passed++;
 else {
-	echo '<br />test '.$tests.' failed.';
+	echo '<br />test '.$tests.' failed.<br />';
 	$failed++;
 }
 $tests++;

@@ -33,8 +33,8 @@ class TableColumn {
 		return (count($this->cells) >= 1);
 	}
 
-	public function addCell($cell_text, $row_header, $span){
-		$new_cell = new TableCell($cell_text, $this->column_header, $row_header, $span);
+	public function addCell($cell_text, $row_header, $span, $url){
+		$new_cell = new TableCell($cell_text, $this->column_header, $row_header, $span, $url);
 		array_unshift($this->cells, $new_cell);
 	}
 	

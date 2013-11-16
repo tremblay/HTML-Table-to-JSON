@@ -220,6 +220,19 @@ class HTMLTable2JSON {
 							$cell_name = str_replace('"', '\"', $cell_name);
 							$cell_name = str_replace('<br />', '', $cell_name);
 							$cell_name = trim($cell_name);
+							$link_start = stripos($cell_name, '<a href=\"');
+								if (false === $link_start)
+									$link = null;
+								else {
+									$link_start +=  + strlen('<a href=\"');
+									$link_end = stripos($cell_name, '\">', $link_start);
+									$link_len = $link_end - $link_start;
+									$link = substr($cell_name, $link_start, $link_len);
+									$link_start = stripos($cell_name, '</a>');
+									$link_end += strlen('\">');
+									$link_len = $link_start - $link_end;
+									$cell_name = substr($cell_name, $link_end, $link_len);
+								}
 
 							$other_pos = stripos($cell, ' rowspan-');
 							if (false === $other_pos)
@@ -247,7 +260,7 @@ class HTMLTable2JSON {
 								array_push($column_array, new TableColumn('Column'.count($column_array)));
 							if (count($column_array) == $i)
 								array_push($column_array, new TableColumn('Column '.$i));
-							$column_array[$i]->addCell($cell_name, $row_header, $span_number);
+							$column_array[$i]->addCell($cell_name, $row_header, $span_number, $link);
 						
 							if($arrangeByRow){
 								$column_header = $column_array[$i]->getName();
