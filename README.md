@@ -3,16 +3,18 @@ HTML-Table-to-JSON
 
 Author: Colin Tremblay
 
-Date:   Tuesday, 12th November, 2013
+Date:   Friday, 15th November, 2013
 
 ## About
 Easily scrape and parse a table stored on a web page.
 
 This project is still in ALPHA, meaning it is not fully functional!
 
-The current version is .6
+The current version is .7
 
-The project currently works on most HTML tables. Features similar to those in the javascript version (https://github.com/lightswitch05/table-to-json) by @lightswitch05 will be added soon. 
+The project currently works on most HTML tables. Nested tables and tables containing malicious inputs have not been dealt with.
+
+Features similar to those in the javascript version (https://github.com/lightswitch05/table-to-json) by @lightswitch05 are being added incrementally. 
 
 ## Usage
 To get the parser, simply download the 4 php files in 'src.' 
@@ -60,6 +62,11 @@ Note about php and optional arguments: If you wish to use an argument lower on t
 
 sample.php has examples of the correct usage.
 
+### TODO
+ - Override cell names/data
+ - Handle html tags within a cell better (as attribute of the cell). ex: links within the cell
+ - Do something with the style and/or class of a given cell, row, or column. This information could be useful in some cases and shouldn't be hard to access.
+ - Code cleanup/refactor
 
 For support, feedback, suggestions etc. please email tremblay@grinnell.edu
 
