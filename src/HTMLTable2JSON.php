@@ -72,7 +72,9 @@ class HTMLTable2JSON {
 		else $html = $testing;
 
 		// Pull table out of HTML
-		$table_str = '<table id="'.$tableID;
+		if (strcmp('', $tableID))
+			$table_str = '<table';
+		else $table_str = '<table id="'.$tableID;
 		$start_pos = stripos($html, $table_str);
 		$end_pos = stripos($html, '</table>', $start_pos) + strlen('</table>');
 		$length = $end_pos - $start_pos;
