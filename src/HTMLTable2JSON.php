@@ -220,22 +220,29 @@ class HTMLTable2JSON {
 							$inner_len = $inner_pos_end - $inner_pos_start;
 							$cell_name = substr($cell, $inner_pos_start, $inner_len);
 							$cell_name = str_replace('"', '\"', $cell_name);
+							$cell_name = str_replace('&nbsp;', '', $cell_name);
 							$cell_name = str_replace('<br />', '', $cell_name);
 							$cell_name = trim($cell_name);
 							$link_start = stripos($cell_name, '<a href=\"');
-								if (false === $link_start)
-									$link = null;
-								else {
-									$link_start +=  + strlen('<a href=\"');
-									$link_end = stripos($cell_name, '\">', $link_start);
-									$link_len = $link_end - $link_start;
-									$link = substr($cell_name, $link_start, $link_len);
-									$link_start = stripos($cell_name, '</a>');
-									$link_end += strlen('\">');
-									$link_len = $link_start - $link_end;
-									$cell_name = substr($cell_name, $link_end, $link_len);
-								}
-
+							if (false === $link_start)
+								$link = null;
+							else {
+								$link_start +=  + strlen('<a href=\"');
+								$link_end = stripos($cell_name, '\">', $link_start);
+								$link_len = $link_end - $link_start;
+								$link = substr($cell_name, $link_start, $link_len);
+								$link_start = stripos($cell_name, '</a>');
+								$link_end += strlen('\">');
+								$link_len = $link_start - $link_end;
+								$cell_name = substr($cell_name, $link_end, $link_len);
+							}
+							$link_start = stripos($cell_name, '<font');
+							if (false !== $link_start) {
+								$link_start = stripos($cell_name, '\">', $link_start) + strlen('\">');
+								$link_end = stripos($cell_name, '</font>', $link_start);
+								$link_len = $link_end - $link_start;
+								$cell_name = substr($cell_name, $link_start, $link_len);
+							}
 							$other_pos = stripos($cell, ' rowspan-');
 							if (false === $other_pos)
 								$spans_one = true;
