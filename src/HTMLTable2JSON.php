@@ -16,7 +16,7 @@ include_once "TableRow.php";
 
 class HTMLTable2JSON {
 
-	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $onlyColumns = FALSE, $arrangeByRow = FALSE, $ignoreHidden = FALSE, $testing = NULL) {
+	public function tableToJSON($url, $firstColIsRowName = TRUE, $tableID = '', $ignoreCols = NULL, $headers = NULL, $firstRowIsData = FALSE, $onlyColumns = FALSE, $arrangeByRow = FALSE, $ignoreHidden = FALSE, $printJSON = TRUE, $testingTable = NULL) {
 		$ignoring = FALSE;
 		$excluding = FALSE;
 		if (NULL != $onlyColumns){
@@ -53,7 +53,7 @@ class HTMLTable2JSON {
 				$headers = NULL;
 			}
 
-		if (NULL == $testing) {
+		if (NULL == $testingTable) {
 			// Get html using curl
 			$c = curl_init($url);
 			curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
@@ -69,7 +69,7 @@ class HTMLTable2JSON {
 				die('Failed to get html from '.$url.'<br />');
 			curl_close($c);
 		}
-		else $html = $testing;
+		else $html = $testingTable;
 
 		// Pull table out of HTML
 		if (strcmp('', $tableID))
@@ -301,7 +301,7 @@ class HTMLTable2JSON {
 			$start_pos = stripos($table, '<tr');
 		}
 
-		if (NULL == $testing) {
+		if ($printJSON) {
 			$outfile = 'output.json';
 			if (false == ($out_handle = fopen($outfile, 'w')))
 				die('Failed to create output file.');
@@ -331,7 +331,7 @@ class HTMLTable2JSON {
 			$output = $output."\n}";
 		}
 
-		if (NULL == $testing) {
+		if ($printJSON) {
 			fwrite($out_handle, $output);
 			fclose($out_handle);
 			echo 'JSON Created<br />';

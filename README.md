@@ -52,10 +52,13 @@ To use, include HTMLTable2JSON.php in your php file, create a new HTMLTable2JSON
   - Boolean indicating whether rows tagged with `style=\"display: none;` should appear in output.
   - Setting `TRUE` will suppress hidden rows.
   - Default: `FALSE`
-- `testing`
+- `printJSON`
+  - Boolean indicating whether the program should create the JSON or simply return the output to the caller.
+  - Setting `FALSE` leaves the output in the hands of the caller. `TRUE` creates a JSON file. 
+  - Default: `TRUE` 
+- `testingTable`
   - String representing an HTML table. Allows user to manually input a table for conversion, instead of scraping from a webpage.
   - Ignores whatever value is in `url`.
-  - Causes tableToJSON to return the JSON as a string (instead of creating a file with it).
   - Default: `NULL`
 
 Note about php and optional arguments: If you wish to use an argument lower on the list, but not one higher, you must still fill in the higher values. To avoid changing the program, use `NULL` as the argument for any options you do not wish to change. 
