@@ -33,7 +33,7 @@ $tests++;
 $helper->tableToJSON('http://kdic.grinnell.edu/programs/schedule/', true, 'wp-table-reloaded-id-6-no-1', array(0 => 0, 1 => 2, 2 => 3, 3 => 4, 4 => 5, 5 => 6, 6 => 7, 7 => 8, 8 => 9));
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
-$output = "{\"Monday\" : [\n\t{\"cell_text\" : \"The Jenn N' Juice Show\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"8:00PM\",\n\t\"spans\" : \"2\"},\n\t{\"cell_text\" : \"West Coast Dub\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/west-coast-dub/ \",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"10:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"Good Touches\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/good-touches/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"11:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"The Ray KDIC Variety Hour\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"12:00AM\",\n\t\"spans\" : \"1\"}]\n}";
+$output = "{\"Monday\" : [\n\t{\"cell_text\" : \"The Vibe\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/the-vibe/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"7:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"The Jenn N' Juice Show\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"8:00PM\",\n\t\"spans\" : \"2\"},\n\t{\"cell_text\" : \"West Coast Dub\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/west-coast-dub/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"10:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"Good Touches\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/good-touches/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"11:00PM\",\n\t\"spans\" : \"1\"},\n\t{\"cell_text\" : \"The Ray KDIC Variety Hour\",\n\t\"url\" : \"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\",\n\t\"column\" : \"Monday\",\n\t\"row\" : \"12:00AM\",\n\t\"spans\" : \"1\"}]\n}";
 fwrite($out_handle, $output);
 fclose($out_handle);
 
@@ -251,7 +251,7 @@ $tests++;
 $helper->tableToJSON('http://kdic.grinnell.edu/programs/schedule/', TRUE, null, null, null, false, array(1), true);
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
-$output = "{\t\"8:00PM\":{\n\t\t\"Monday\":\"The Jenn N' Juice Show\"\n\t},\n\t\"10:00PM\":{\n\t\t\"Monday\":\"West Coast Dub\"\n\t},\n\t\"11:00PM\":{\n\t\t\"Monday\":\"Good Touches\"\n\t},\n\t\"12:00AM\":{\n\t\t\"Monday\":\"The Ray KDIC Variety Hour\"\n\t}\n}";
+$output = "{\t\"7:00PM\":{\n\t\t\"Monday\":\"The Vibe\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-vibe/\"\n\t},\n\t\"8:00PM\":{\n\t\t\"Monday\":\"The Jenn N' Juice Show\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\"\n\t},\n\t\"10:00PM\":{\n\t\t\"Monday\":\"West Coast Dub\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/west-coast-dub/\"\n\t},\n\t\"11:00PM\":{\n\t\t\"Monday\":\"Good Touches\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/good-touches/\"\n\t},\n\t\"12:00AM\":{\n\t\t\"Monday\":\"The Ray KDIC Variety Hour\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\"\n\t}\n}";
 fwrite($out_handle, $output);
 fclose($out_handle);
 
@@ -264,7 +264,6 @@ else {
 	$failed++;
 }
 $tests++;
-
 
 if ($passed == $tests)
 	echo '<br />Ran '.$tests.' tests. All passed!';

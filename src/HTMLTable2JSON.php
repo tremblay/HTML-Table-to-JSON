@@ -231,11 +231,13 @@ class HTMLTable2JSON {
 								$link_end = stripos($cell_name, '\">', $link_start);
 								$link_len = $link_end - $link_start;
 								$link = substr($cell_name, $link_start, $link_len);
+								$link = trim($link);
 								$link_start = stripos($cell_name, '</a>');
 								$link_end += strlen('\">');
 								$link_len = $link_start - $link_end;
 								$cell_name = substr($cell_name, $link_end, $link_len);
 							}
+							// Remove Font tag
 							$link_start = stripos($cell_name, '<font');
 							if (false !== $link_start) {
 								$link_start = stripos($cell_name, '\">', $link_start) + strlen('\">');
@@ -274,6 +276,10 @@ class HTMLTable2JSON {
 							if($arrangeByRow){
 								$column_header = $column_array[$i]->getName();
 								$table_row_object->addAttributePair($column_header, $cell_name);
+								if (NULL != $link) {
+									$link_header = $column_header.' URL';
+									$table_row_object->addAttributePair($link_header, $link);	
+								}						
 							}
 						}
 					}
