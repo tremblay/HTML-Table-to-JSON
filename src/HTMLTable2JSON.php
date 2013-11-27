@@ -162,7 +162,6 @@ class HTMLTable2JSON {
 			$end_pos += strlen('</tr>');
 			$length = $end_pos - $start_pos;
 			$temp = substr($table, $start_pos, $length);
-
 			if (!$ignoreHidden || (FALSE === stripos($temp, "style=\"display: none;\""))){
 				// If this row doens't have a skipped array, add one
 				if (count($skipped_columns) <= $j + 1) {

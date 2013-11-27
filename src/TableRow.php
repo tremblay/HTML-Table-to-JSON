@@ -24,12 +24,14 @@ class TableRow {
 	}
 
 	public function addAttributePair($title, $value){
-		array_unshift($this->attribute_titles, $title);
-		array_unshift($this->attribute_values, $value);
+		if (null != $value) {
+			array_unshift($this->attribute_titles, $title);
+			array_unshift($this->attribute_values, $value);
+		}
 	}
 
 	public function hasCells(){
-		return (count($this->attribute_values) >= 1);
+		return (is_array($this->attribute_values) && (!count($this->attribute_values) < 1) && is_array($this->attribute_titles) && (!count($this->attribute_titles) < 1));
 	}
 	
 	public function writeJSON(){
