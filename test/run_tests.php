@@ -251,7 +251,7 @@ $tests++;
 $helper->tableToJSON('http://kdic.grinnell.edu/programs/schedule/', TRUE, null, null, null, false, array(1), true);
 if (false == ($out_handle = fopen($outfile, 'w')))
 	die('Failed to create output file.');
-$output = "{\t\"7:00PM\":{\n\t\t\"Monday\":\"The Vibe\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-vibe/\"\n\t},\n\t\"8:00PM\":{\n\t\t\"Monday\":\"The Jenn N' Juice Show\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\"\n\t},\n\t\"10:00PM\":{\n\t\t\"Monday\":\"West Coast Dub\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/west-coast-dub/\"\n\t},\n\t\"11:00PM\":{\n\t\t\"Monday\":\"Good Touches\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/good-touches/\"\n\t},\n\t\"12:00AM\":{\n\t\t\"Monday\":\"The Ray KDIC Variety Hour\",\n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\"\n\t}\n}";
+$output = "{\t\"7:00PM\":{\n\t\t\"Monday\":\"The Vibe\", \n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-vibe/\"\n\t},\n\t\"8:00PM\":{\n\t\t\"Monday\":\"The Jenn N' Juice Show\", \n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-jenn-n-juice-show/\"\n\t},\n\t\"10:00PM\":{\n\t\t\"Monday\":\"West Coast Dub\", \n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/west-coast-dub/\"\n\t},\n\t\"11:00PM\":{\n\t\t\"Monday\":\"Good Touches\", \n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/good-touches/\"\n\t},\n\t\"12:00AM\":{\n\t\t\"Monday\":\"The Ray KDIC Variety Hour\", \n\t\t\"Monday URL\":\"http://kdic.grinnell.edu/programs/shows/the-ray-kdic-variety-hour/\"\n\t}\n}";
 fwrite($out_handle, $output);
 fclose($out_handle);
 
