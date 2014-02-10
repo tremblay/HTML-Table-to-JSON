@@ -71,6 +71,13 @@ class HTMLTable2JSON {
 		}
 		else $html = $testingTable;
 
+		// Remove newlines, returns, and breaks
+		$html = str_replace(array("\n", "\r", "\t"), '', $html);
+		$html = str_ireplace("\0D", '', $html);
+		$html = str_ireplace("<br>", '', $html);
+		$html = str_ireplace("<br />", '', $html);
+		$html = str_ireplace("<br/>", '', $html);
+		
 		// Pull table out of HTML
 		if (strcmp('', $tableID))
 			$table_str = '<table';
@@ -112,7 +119,6 @@ class HTMLTable2JSON {
 						$header_length = $header_end - $header_start;
 						$cell_name = substr($header, $header_start, $header_length);
 						$cell_name = str_replace('"', '\"', $cell_name);
-						$cell_name = str_replace('<br />', '', $cell_name);
 						$cell_name = trim($cell_name);
 						array_push($column_array, new TableColumn($cell_name));
 					}
@@ -183,7 +189,6 @@ class HTMLTable2JSON {
 					$inner_pos_end = stripos($temp, $end_tag);
 					$inner_len = $inner_pos_end - $inner_pos_start;
 					$row_header = substr($temp, $inner_pos_start, $inner_len);
-					$row_header = str_replace('<br />', '', $row_header);
 					$row_header = trim($row_header);
 					
 					$inner_pos_start = $inner_pos_end + strlen($end_tag);
@@ -220,7 +225,6 @@ class HTMLTable2JSON {
 							$cell_name = substr($cell, $inner_pos_start, $inner_len);
 							$cell_name = str_replace('"', '\"', $cell_name);
 							$cell_name = str_replace('&nbsp;', '', $cell_name);
-							$cell_name = str_replace('<br />', '', $cell_name);
 							$cell_name = trim($cell_name);
 							$link_start = stripos($cell_name, '<a href=\"');
 							if (false === $link_start)
