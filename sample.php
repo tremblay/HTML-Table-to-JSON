@@ -15,5 +15,5 @@ $helper->tableToJSON('http://kdic.grinnell.edu/programs/schedule/');
 
 // Using $testing
 //$table = "<table id=\"test-table\"><thead><tr><th>First Name</th><th>Last Name</th><th>Points</th></tr></thead><tbody><tr><td>Jill</td><td>Smith</td><td>50</td></tr><tr><td>Eve</td><td>Jackson</td><td>94</td></tr><tr><td>John</td><td>Doe</td><td>80</td></tr></tbody></table>";
-//$output = $helper->tableToJSON('', false, null, null, $table);
+//$output = $helper->tableToJSON('', false, null, null, null, null, null, true, null, null, $table);
 ?>
